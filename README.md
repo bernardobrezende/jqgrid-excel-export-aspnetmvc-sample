@@ -11,7 +11,8 @@ This is a small sample how to export jqGrid data to an Excel file using ASP.NET 
 
 1. Fix export to *.xlsx extension.
 2. Remove form submission from the "Export to Excel" button and execute an AJAX call to server instead.
-3. Send the grid data when clicking on "Export to Excel". Current version calls (again) the query in export action.
+3. Send the grid data when clicking on "Export to Excel". The current version make two queries instead of one. First to load the grid and the second to write the excel content.
+4. Create a custom ActionResult to encapsulate Http Response management.
 
 ## Code License
 
