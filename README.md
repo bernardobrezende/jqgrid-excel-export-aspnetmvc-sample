@@ -16,4 +16,5 @@ This is a small sample how to export jqGrid data to an Excel file using ASP.NET 
 
 ## Code License
 
-This sample source code is under the MIT license (check out more in http://www.opensource.org/licenses/MIT).
+The original idea for this sample can be found at http://highoncoding.com/Articles/566_JQuery_jqGrid_Export_to_Excel_Using_ASP_NET_MVC_Framework.aspx
+However, this sample was written with a few changes and its source code is under the MIT license (check out more in http://www.opensource.org/licenses/MIT).
