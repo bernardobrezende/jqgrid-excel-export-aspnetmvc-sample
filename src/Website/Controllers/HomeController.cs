@@ -1,7 +1,5 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 using Website.Models;
 using Website.Utils;
@@ -34,6 +32,7 @@ namespace Website.Controllers
         }
 
         [HttpGet]
+        [ExportResultToExcel(exportedFileName: "Products.xls", tempDataKey: "ProductsData")]
         public ActionResult ExportToExcel()
         {
             GridView grid = new GridView();
@@ -45,22 +44,9 @@ namespace Website.Controllers
                               };
             grid.DataBind();
 
-            Response.ClearContent();
-            Response.AddHeader("Content-Disposition", "attachment; filename=MyGridData.xls");
-            Response.ContentType = "application/ms-excel"; 
+            TempData["ProductsData"] = grid;
 
-            using (StringWriter sw = new StringWriter())
-            {
-                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
-                {
-                    grid.RenderControl(htw);
-                    Response.Write(sw.ToString());
-                }
-            }
-
-            Response.End();
-
-            return View("Index"); 
+            return View("Index");
         }
     }
 }
