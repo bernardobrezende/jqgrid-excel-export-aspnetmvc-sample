@@ -11,8 +11,11 @@ namespace Website.Utils
         private string exportedFileName;
         private string tempDataKey;
 
+        /// <summary>
+        /// Default constructor with default values for excel exportation.
+        /// </summary>
         public ExportResultToExcelAttribute() : this("MyGridData.xls", "GridData") { }
-        //
+        
         public ExportResultToExcelAttribute(string exportedFileName, string tempDataKey)
         {
             if (String.IsNullOrEmpty(exportedFileName))
@@ -27,23 +30,23 @@ namespace Website.Utils
         {
             GridView grid = filterContext.Controller.TempData[this.tempDataKey] as GridView;
             //
-            if (grid != null)
+            if (grid == null)
+                throw new InvalidOperationException("Cannot find data to export in TempData's dictionary.");
+            
+            filterContext.HttpContext.Response.ClearContent();
+            filterContext.HttpContext.Response.AddHeader("Content-Disposition", String.Format("attachment; filename={0}", this.exportedFileName));
+            filterContext.HttpContext.Response.ContentType = "application/ms-excel";
+
+            using (StringWriter sw = new StringWriter())
             {
-                filterContext.HttpContext.Response.ClearContent();
-                filterContext.HttpContext.Response.AddHeader("Content-Disposition", String.Format("attachment; filename={0}", this.exportedFileName));
-                filterContext.HttpContext.Response.ContentType = "application/ms-excel";
-
-                using (StringWriter sw = new StringWriter())
+                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
                 {
-                    using (HtmlTextWriter htw = new HtmlTextWriter(sw))
-                    {
-                        grid.RenderControl(htw);
-                        filterContext.HttpContext.Response.Write(sw.ToString());
-                    }
+                    grid.RenderControl(htw);
+                    filterContext.HttpContext.Response.Write(sw.ToString());
                 }
-
-                filterContext.HttpContext.Response.End();
             }
+
+            filterContext.HttpContext.Response.End();
 
             base.OnActionExecuted(filterContext);
         }
