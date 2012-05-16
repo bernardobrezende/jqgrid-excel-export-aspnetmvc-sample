@@ -28,26 +28,26 @@ namespace Website.Utils
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
-            GridView grid = filterContext.Controller.TempData[this.tempDataKey] as GridView;
-            //
-            if (grid == null)
-                throw new InvalidOperationException("Cannot find data to export in TempData's dictionary.");
-            
-            filterContext.HttpContext.Response.ClearContent();
-            filterContext.HttpContext.Response.AddHeader("Content-Disposition", String.Format("attachment; filename={0}", this.exportedFileName));
-            filterContext.HttpContext.Response.ContentType = "application/ms-excel";
-
-            using (StringWriter sw = new StringWriter())
+            using (GridView grid = filterContext.Controller.TempData[this.tempDataKey] as GridView)
             {
-                using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+                if (grid == null)
+                    throw new InvalidOperationException("Cannot find data to export in TempData's dictionary.");
+
+                filterContext.HttpContext.Response.ClearContent();
+                filterContext.HttpContext.Response.AddHeader("Content-Disposition", String.Format("attachment; filename={0}", this.exportedFileName));
+                filterContext.HttpContext.Response.ContentType = "application/ms-excel";
+
+                using (StringWriter sw = new StringWriter())
                 {
-                    grid.RenderControl(htw);
-                    filterContext.HttpContext.Response.Write(sw.ToString());
+                    using (HtmlTextWriter htw = new HtmlTextWriter(sw))
+                    {
+                        grid.RenderControl(htw);
+                        filterContext.HttpContext.Response.Write(sw.ToString());
+                    }
                 }
             }
 
             filterContext.HttpContext.Response.End();
-
             base.OnActionExecuted(filterContext);
         }
     }

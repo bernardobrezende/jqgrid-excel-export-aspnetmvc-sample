@@ -35,17 +35,18 @@ namespace Website.Controllers
         [ExportResultToExcel(exportedFileName: "Products.xls", tempDataKey: "ProductsData")]
         public ActionResult ExportToExcel()
         {
-            GridView grid = new GridView();
-            grid.DataSource = from p in this.products.All()
-                              select new
-                              {
-                                  ProductName = p.Name,
-                                  SomeProductId = p.Id
-                              };
-            grid.DataBind();
+            using (GridView grid = new GridView())
+            {
+                grid.DataSource = from p in this.products.All()
+                                  select new
+                                  {
+                                      ProductName = p.Name,
+                                      SomeProductId = p.Id
+                                  };
+                grid.DataBind();
 
-            TempData["ProductsData"] = grid;
-
+                TempData["ProductsData"] = grid;
+            }
             return View("Index");
         }
     }
